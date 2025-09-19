@@ -1,6 +1,7 @@
-package dev.roland.billing_program.models;
+package dev.roland.billing_program.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -8,6 +9,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class User {
 
     @Id
