@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+    <changeSet id="001" author="roland">
+        <insert tableName="roles">
+            <column name="name" value="ADMIN"/>
+            <column name="description" value="Adminisztrátor - minden oldalhoz hozzáfér."/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="ACCOUNTANT"/>
+            <column name="description" value="Könyvelő - számlákat létrehozhat és listázhat."/>
+        </insert>
+
+        <insert tableName="roles">
+            <column name="name" value="USER"/>
+            <column name="description" value="Általános felhasználó - csak számlákat láthat."/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

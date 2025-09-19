@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: billing-program
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/billing_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
