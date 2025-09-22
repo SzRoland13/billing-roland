@@ -10,21 +10,21 @@
             <column name="id" valueNumeric="1"/>
             <column name="name" value="Use Erno"/>
             <column name="username" value="use.erno123"/>
-            <column name="password" value=""/>
+            <column name="password" value="$2a$12$Dz5fItfX6xlaqDyoaU7mFuSNJU8HP1iXUtIs4r7zOeV5/CLHB.U.G"/>
         </insert>
 
         <insert tableName="users">
             <column name="id" valueNumeric="2"/>
             <column name="name" value="Kim Add Min"/>
             <column name="username" value="kimam_"/>
-            <column name="password" value=""/>
+            <column name="password" value="$2a$12$fcWRS/nEZXliXZfTJZwMtOPSQNPbU566KInl/asxvfBE8ctWcV/cO"/>
         </insert>
 
         <insert tableName="users">
             <column name="id" valueNumeric="3"/>
             <column name="name" value="Archibald Accountant"/>
             <column name="username" value="archie99"/>
-            <column name="password" value=""/>
+            <column name="password" value="$2a$12$FPrfKD2hYGs3JfIUqA0DJOazkRxRkb477YWr5iIW2hH0FjGKHz55m"/>
         </insert>
     </changeSet>
 

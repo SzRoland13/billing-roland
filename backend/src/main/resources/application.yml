@@ -2,11 +2,16 @@ spring:
   application:
     name: billing-program
 
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/billing_db
+    url: ${PSQLDB_URL}
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+
+jwt_secret: ${JWT_SECRET}

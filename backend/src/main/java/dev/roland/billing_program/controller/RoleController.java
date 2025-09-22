@@ -1,7 +1,7 @@
 package dev.roland.billing_program.controller;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class RoleController {
 }
