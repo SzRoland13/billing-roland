@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,14 +29,16 @@ public class MyUserDetailsService implements UserDetailsService {
 
         User user = userResponse.get();
 
-        //TODO: megoldás a role-okhoz!
-        return new
-                org.springframework.security.core.userdetails.User(
-                username,
+        List<SimpleGrantedAuthority> authorities =
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                        .toList();
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
                 user.getPassword(),
-                Collections.singletonList(
-                        new SimpleGrantedAuthority("ROLE_USER")
-                )
+                authorities
         );
+
     }
 }

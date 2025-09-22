@@ -1,16 +1,17 @@
 package dev.roland.billing_program.service;
 
 import dev.roland.billing_program.dto.LoginRequestDTO;
+import dev.roland.billing_program.dto.LoginTokens;
 import dev.roland.billing_program.dto.RegistrationRequestDTO;
-import dev.roland.billing_program.model.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
 public interface AuthService {
 
-    Map<String, Object> registrate(RegistrationRequestDTO registrationRequestDTO);
+    LoginTokens handleRegistration(RegistrationRequestDTO registrationRequestDTO);
 
-    Map<String, Object> login(LoginRequestDTO loginRequestDTO);
+    LoginTokens login(LoginRequestDTO loginRequestDTO);
 
-    User save(RegistrationRequestDTO request);
+    ResponseEntity<Map<String, Object>> handleRefresh(Map<String, String> request);
 }
