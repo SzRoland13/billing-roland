@@ -1,7 +1,14 @@
 import { useUserStore } from "../../store/userStore";
 
-export const login = (username: string, password: string) => {
-  return useUserStore.getState().login(username, password);
+export const login = (
+  username: string,
+  password: string,
+  sessionId?: string,
+  captchaResponse?: string
+) => {
+  return useUserStore
+    .getState()
+    .login(username, password, sessionId, captchaResponse);
 };
 
 export const logout = () => {

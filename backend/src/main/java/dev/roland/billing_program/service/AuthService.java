@@ -11,7 +11,7 @@ public interface AuthService {
 
     LoginResponseDTO handleRegistration(RegistrationRequestDTO registrationRequestDTO);
 
-    LoginResponseDTO login(LoginRequestDTO loginRequestDTO);
+    ResponseEntity<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO);
 
     ResponseEntity<LoginResponseDTO.TokensDTO> handleRefresh(Map<String, String> request);
 }

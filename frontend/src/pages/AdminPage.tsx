@@ -1,4 +1,3 @@
-// src/pages/AdminPage.tsx
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -18,7 +17,7 @@ import {
   ListItemText,
   Pagination,
 } from "@mui/material";
-import { useAdminStore } from "../store/useAdminStore";
+import { useAdminStore } from "../store/adminStore";
 import type { Role } from "../utils/types";
 
 const AdminPage = () => {

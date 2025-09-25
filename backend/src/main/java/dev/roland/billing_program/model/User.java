@@ -30,6 +30,12 @@ public class User {
 
     private LocalDateTime lastLogin;
 
+    @Column(name = "failed_login_attempts" ,nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column(name = "last_failed_login")
+    private LocalDateTime lastFailedLogin;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

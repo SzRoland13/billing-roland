@@ -13,6 +13,8 @@ public class LoginResponseDTO {
 
     private UserDTO user;
     private TokensDTO tokens;
+    private boolean captchaRequired = false;
+    private String message;
 
     @NoArgsConstructor
     @AllArgsConstructor
