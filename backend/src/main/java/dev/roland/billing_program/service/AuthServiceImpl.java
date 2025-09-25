@@ -7,10 +7,11 @@ import dev.roland.billing_program.model.RefreshToken;
 import dev.roland.billing_program.model.Role;
 import dev.roland.billing_program.model.User;
 import dev.roland.billing_program.repository.RefreshTokenRepository;
+import dev.roland.billing_program.repository.RoleRepository;
 import dev.roland.billing_program.repository.UserRepository;
 import dev.roland.billing_program.security.JWTUtil;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,26 +21,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private JWTUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RoleRepository roleRepository;
+    private final JWTUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginResponseDTO handleRegistration(RegistrationRequestDTO registrationRequestDTO) {
@@ -91,11 +84,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private User save(RegistrationRequestDTO request) {
+        Role role = roleRepository.findByName(request.getRoleName())
+                .orElseThrow(() -> new RuntimeException("Role not found: " + request.getRoleName()));
+
+
         User user = new User();
         user.setName(request.getName());
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
-        user.setRoles(Collections.singleton(request.getRole()));
+        user.setRoles(Collections.singleton(role));
 
         return userRepository.save(user);
     }

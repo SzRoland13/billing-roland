@@ -6,6 +6,10 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import { ROLE } from "./utils/enums";
 import { useUserStore } from "./store/userStore";
+import InvoicesPage from "./pages/InvoicesPage";
+import CreateInvoicePage from "./pages/CreateInvoicePage";
+import InvoiceViewPage from "./pages/InvoiceViewPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   const { accessToken } = useUserStore();
@@ -42,10 +46,35 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute roles={[ROLE.ADMIN]}>
-              <div>Admin Page (skeleton)</div>
+              <AdminPage />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/invoices"
+          element={
+            <ProtectedRoute roles={[ROLE.USER, ROLE.ACCOUNTANT, ROLE.ADMIN]}>
+              <InvoicesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-invoice"
+          element={
+            <ProtectedRoute roles={[ROLE.ACCOUNTANT, ROLE.ADMIN]}>
+              <CreateInvoicePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/invoices/:id"
+          element={
+            <ProtectedRoute roles={[ROLE.USER, ROLE.ACCOUNTANT, ROLE.ADMIN]}>
+              <InvoiceViewPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="*"
           element={

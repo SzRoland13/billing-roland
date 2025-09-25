@@ -33,7 +33,9 @@ const LoginPage = () => {
   return (
     <Container maxWidth="xs">
       <Box mt={8} display="flex" flexDirection="column" alignItems="center">
-        <Typography variant="h5">Login</Typography>
+        <Typography variant="h5" sx={{ color: "black" }}>
+          Login
+        </Typography>
         <Box component="form" mt={2} onSubmit={handleSubmit} width="100%">
           <TextField
             label="Username"
