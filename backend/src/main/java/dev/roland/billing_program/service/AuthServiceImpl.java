@@ -1,9 +1,10 @@
 package dev.roland.billing_program.service;
 
 import dev.roland.billing_program.dto.LoginRequestDTO;
-import dev.roland.billing_program.dto.LoginTokens;
+import dev.roland.billing_program.dto.LoginResponseDTO;
 import dev.roland.billing_program.dto.RegistrationRequestDTO;
 import dev.roland.billing_program.model.RefreshToken;
+import dev.roland.billing_program.model.Role;
 import dev.roland.billing_program.model.User;
 import dev.roland.billing_program.repository.RefreshTokenRepository;
 import dev.roland.billing_program.repository.UserRepository;
@@ -41,28 +42,41 @@ public class AuthServiceImpl implements AuthService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public LoginTokens handleRegistration(RegistrationRequestDTO registrationRequestDTO) {
+    public LoginResponseDTO handleRegistration(RegistrationRequestDTO registrationRequestDTO) {
         String encodedPass = passwordEncoder.encode(registrationRequestDTO.getPassword());
         registrationRequestDTO.setPassword(encodedPass);
         User user = save(registrationRequestDTO);
 
-        return generateTokens(user);
+        LoginResponseDTO.UserDTO userDTO = new LoginResponseDTO.UserDTO(
+                user.getName(),
+                user.getUsername(),
+                user.getRoles().stream().map(Role::getName).toList()
+        );
+
+        return new LoginResponseDTO(userDTO, generateTokens(user));
     }
 
     @Override
-    public LoginTokens login(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         try {
             UsernamePasswordAuthenticationToken authInputToken = new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
             authenticationManager.authenticate(authInputToken);
+            User user = userRepository.findByUsername(loginRequestDTO.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
 
-            return generateTokens(loginRequestDTO.getUsername());
+            LoginResponseDTO.UserDTO userDTO = new LoginResponseDTO.UserDTO(
+                    user.getName(),
+                    user.getUsername(),
+                    user.getRoles().stream().map(Role::getName).toList()
+            );
+
+            return new LoginResponseDTO(userDTO, generateTokens(user));
         } catch (Exception e) {
             throw new RuntimeException("Invalid username/password.");
         }
     }
 
     @Override
-    public ResponseEntity<Map<String, Object>> handleRefresh(Map<String, String> request) {
+    public ResponseEntity<LoginResponseDTO.TokensDTO> handleRefresh(Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
 
         RefreshToken tokenEntity = refreshTokenRepository.findByToken(refreshToken)
@@ -73,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String newAccessToken = jwtUtil.generateToken(tokenEntity.getUser());
-        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
+        return ResponseEntity.ok(new LoginResponseDTO.TokensDTO(newAccessToken, refreshToken));
     }
 
     private User save(RegistrationRequestDTO request) {
@@ -90,16 +104,8 @@ public class AuthServiceImpl implements AuthService {
         userRepository.updateLastLogin(username, LocalDateTime.now());
     }
 
-    private LoginTokens generateTokens(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if (user.isPresent()) {
-            return generateTokens(user.get());
-        } else throw new RuntimeException("User not found");
-    }
-
     @Transactional
-    private LoginTokens generateTokens(User user) {
+    private LoginResponseDTO.TokensDTO generateTokens(User user) {
         String refreshToken = UUID.randomUUID().toString();
         String accessToken = jwtUtil.generateToken(user);
 
@@ -111,6 +117,6 @@ public class AuthServiceImpl implements AuthService {
 
         updateLastLogin(user.getUsername());
 
-        return new LoginTokens(accessToken, refreshToken);
+        return new LoginResponseDTO.TokensDTO(accessToken, refreshToken);
     }
 }
