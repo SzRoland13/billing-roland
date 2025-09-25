@@ -13,8 +13,6 @@ const ProtectedRoute = ({ children, roles }: ProtectedRouteProps) => {
   if (!accessToken) return <Navigate to="/login" replace />;
 
   if (roles && !roles.some((role) => userRoles.includes(role))) {
-    console.log("roles: ", roles);
-    console.log("userRoles: ", userRoles);
     return <div>You are not authorized to view this page.</div>;
   }
 

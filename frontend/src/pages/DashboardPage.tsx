@@ -69,6 +69,7 @@ const DashboardPage = () => {
                 <ListItemButton
                   key={item.path}
                   onClick={() => navigate(item.path)}
+                  sx={{ color: "black" }}
                 >
                   <ListItemText primary={item.label} />
                 </ListItemButton>
@@ -91,10 +92,10 @@ const DashboardPage = () => {
         }}
       >
         <Toolbar />
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom sx={{ color: "black" }}>
           Welcome, {name || username || "User"}!
         </Typography>
-        <Typography variant="body1" gutterBottom>
+        <Typography variant="body1" gutterBottom sx={{ color: "black" }}>
           Roles: {roles.length ? roles.join(", ") : "No roles"}
         </Typography>
       </Box>

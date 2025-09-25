@@ -9,8 +9,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { register } from "../api/services/authService";
+import { ROLE } from "../utils/enums";
 
-const roles = ["USER", "ACCOUNTANT"];
+const roles = [ROLE.ACCOUNTANT, ROLE.USER];
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -34,7 +35,13 @@ const RegisterPage = () => {
 
   return (
     <Container maxWidth="xs">
-      <Box mt={8} display="flex" flexDirection="column" alignItems="center">
+      <Box
+        mt={8}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        color="black"
+      >
         <Typography variant="h5">Register</Typography>
         <Box component="form" mt={2} onSubmit={handleSubmit} width="100%">
           <TextField

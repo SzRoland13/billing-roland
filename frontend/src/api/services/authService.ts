@@ -12,7 +12,7 @@ export const register = async (
   name: string,
   username: string,
   password: string,
-  role: string
+  roleName: string
 ) => {
-  return useUserStore.getState().register(name, username, password, role);
+  return useUserStore.getState().register(name, username, password, roleName);
 };

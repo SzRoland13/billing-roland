@@ -17,7 +17,7 @@ interface UserState {
     name: string,
     username: string,
     password: string,
-    role: string
+    roleName: string
   ) => Promise<void>;
 }
 
@@ -61,17 +61,17 @@ export const useUserStore = create(
           state.accessToken = res.data.accessToken;
         });
       },
-      register: async (name, username, password, role) => {
+      register: async (name, username, password, roleName) => {
         const res = await axiosClient.post("/auth/register", {
           name,
           username,
           password,
-          role,
+          roleName,
         });
         set((state) => {
           state.name = name;
           state.username = username;
-          state.roles = [role];
+          state.roles = [roleName];
           state.accessToken = res.data.tokens.accessToken;
           state.refreshToken = res.data.tokens.refreshToken;
         });
