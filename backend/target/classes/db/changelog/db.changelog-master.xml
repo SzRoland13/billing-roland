@@ -9,4 +9,5 @@
     <include file="db/changelog/changes/002-add-base-roles.xml"/>
     <include file="db/changelog/changes/003-add-test-users.xml"/>
     <include file="db/changelog/changes/004-add-refresh-token-table.xml" />
+    <include file="db/changelog/changes/005-add-login-attempts-to-user.xml" />
 </databaseChangeLog>

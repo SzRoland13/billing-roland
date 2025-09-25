@@ -11,7 +11,12 @@ interface UserState {
   refreshToken: string | null;
   setUser: (data: Partial<UserState>) => void;
   clearUser: () => void;
-  login: (username: string, password: string) => Promise<void>;
+  login: (
+    username: string,
+    password: string,
+    sessionId?: string,
+    captchaResponse?: string
+  ) => Promise<void>;
   refreshAccessToken: () => Promise<void>;
   register: (
     name: string,
@@ -39,10 +44,17 @@ export const useUserStore = create(
           refreshToken: null,
         })),
 
-      login: async (username, password) => {
+      login: async (
+        username,
+        password,
+        sessionId?: string,
+        captchaResponse?: string
+      ) => {
         const res = await axiosClient.post("/auth/login", {
           username,
           password,
+          captchaResponse,
+          sessionId,
         });
         set((state) => {
           state.name = res.data.user.name;

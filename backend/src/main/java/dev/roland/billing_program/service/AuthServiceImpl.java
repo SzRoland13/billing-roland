@@ -12,6 +12,7 @@ import dev.roland.billing_program.repository.UserRepository;
 import dev.roland.billing_program.security.JWTUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final CaptchaService captchaService;
 
     @Override
     public LoginResponseDTO handleRegistration(RegistrationRequestDTO registrationRequestDTO) {
@@ -46,15 +48,31 @@ public class AuthServiceImpl implements AuthService {
                 user.getRoles().stream().map(Role::getName).toList()
         );
 
-        return new LoginResponseDTO(userDTO, generateTokens(user));
+        return new LoginResponseDTO(userDTO, generateTokens(user), false, "");
     }
 
     @Override
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO loginRequestDTO) {
+        User user = userRepository.findByUsername(loginRequestDTO.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (user.getFailedLoginAttempts() >= 3) {
+            System.out.println(loginRequestDTO);
+            if (loginRequestDTO.getCaptchaResponse() == null
+                    || loginRequestDTO.getSessionId() == null
+                    || !captchaService.validateCaptcha(loginRequestDTO.getSessionId(), loginRequestDTO.getCaptchaResponse())) {
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED)
+                        .body(new LoginResponseDTO(null, null, true, "CAPTCHA required or invalid"));
+            }
+        }
+
         try {
             UsernamePasswordAuthenticationToken authInputToken = new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword());
             authenticationManager.authenticate(authInputToken);
-            User user = userRepository.findByUsername(loginRequestDTO.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
+
+            user.setFailedLoginAttempts(0);
+            user.setLastFailedLogin(null);
+            userRepository.save(user);
 
             LoginResponseDTO.UserDTO userDTO = new LoginResponseDTO.UserDTO(
                     user.getName(),
@@ -62,8 +80,12 @@ public class AuthServiceImpl implements AuthService {
                     user.getRoles().stream().map(Role::getName).toList()
             );
 
-            return new LoginResponseDTO(userDTO, generateTokens(user));
+            return ResponseEntity.ok(new LoginResponseDTO(userDTO, generateTokens(user),false, ""));
         } catch (Exception e) {
+            user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
+            user.setLastFailedLogin(LocalDateTime.now());
+            userRepository.save(user);
+
             throw new RuntimeException("Invalid username/password.");
         }
     }

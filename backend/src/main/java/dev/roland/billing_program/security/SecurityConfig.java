@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/api/v1/captcha/**").permitAll()
                                 .requestMatchers("/api/v1/user/**").hasRole("USER")
                                 .requestMatchers("/api/v1/invoices/**").authenticated()
                                 .anyRequest().authenticated()
